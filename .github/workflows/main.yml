@@ -2,7 +2,6 @@ name: React app deployement
 
 on:
   push:
-    branches: [main]
 
 jobs:
   build:
@@ -23,10 +22,11 @@ jobs:
         if: ${{ !steps.cache.outputs.cache-hit }}
         run: bun install --frozen-lockfile --silent
 
-      - run: |
+      - name: Build and deploy
+        run: |
           bun run build
           echo "matikkaeditori.fi" >> dist/CNAME
-          echo "VERSION: " >> build/VERSION
+          echo "VERSION: " >> dist/VERSION
           echo $(git rev-parse --short "$GITHUB_SHA") >> dist/VERSION
           git config user.name github-actions
           git config user.email github-actions@github.com
