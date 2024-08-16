@@ -9,22 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      
       - name: Restore CI Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-16-${{ hashFiles('**/bun.lockb') }}
 
       - name: Install Dependencies
         if: ${{ !steps.cache.outputs.cache-hit }}
-        run: yarn --frozen-lockfile
+        run: bun install --frozen-lockfile --silent
 
       - run: |
-          npm ci
-          npm run build
+          bun run build
           echo "matikkaeditori.fi" >> dist/CNAME
           echo "VERSION: " >> build/VERSION
           echo $(git rev-parse --short "$GITHUB_SHA") >> dist/VERSION
